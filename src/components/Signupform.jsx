@@ -2,7 +2,8 @@ import React from "react"
 import {User,Lock , Mail, FileText} from 'lucide-react'
 import {useState,useEffect} from "react"
 import {signup}from "../utils/api"
-
+import { useAuth } from "../context/AuthContext"
+import { useNavigate } from "react-router-dom"
 export default function Signupform(){
     const [username,setUsername]=useState("")
     const [email,setEmail]=useState("")
@@ -11,6 +12,9 @@ export default function Signupform(){
     const[error,setError]=useState("");
     const[loading ,setLoading]=useState(false)
     const [focusedInput, setFocusedInput] = useState(null);
+
+    const {login} = useAuth()
+    const navigate = useNavigate()
 
 
     useEffect(()=>{
@@ -45,8 +49,13 @@ export default function Signupform(){
     
     try {
       const res = await signup({ username, email, password });
-      alert(res.message || "Signup Successful");
-      window.location.href = "/login";
+      if (res.token && res.user) {
+        login(res)
+        alert(res.message || "Signup Successful");
+        navigate('/')
+      }else{
+        navigate('/login')
+      }
     } catch (error) {
       setError(error.response?.data?.message || "Signup failed");
     } finally {
