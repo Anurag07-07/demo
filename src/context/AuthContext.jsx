@@ -35,4 +35,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 // easy hook for components
-export const useAuth = () => createContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);
